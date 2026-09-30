@@ -2,13 +2,13 @@
 
 [Português](README.pt-BR.md)
 
-End-to-end RPA portfolio project that automates a common Accounts Payable workflow across two fictional business systems.
+RPA project that simulates an Accounts Payable workflow across two fictional business systems.
 
 All companies, credentials, records, systems and documents in this repository are fictional.
 
-![Architecture](docs/architecture.svg)
+[Architecture](docs/architecture.svg)
 
-## What the automation does
+# What the automation does
 
 1. Reads pending invoice tasks from an Excel queue.
 2. Logs into the **Supplier Portal** and searches for each invoice.
@@ -21,9 +21,9 @@ All companies, credentials, records, systems and documents in this repository ar
 
 The demo includes successful cases and business exceptions such as a missing purchase order and an unmapped invoice type.
 
-## Quick start
+# Quick start
 
-The project uses a single launcher. No virtual-environment activation and no `.bat` files are required.
+The project uses a single launcher. 
 
 On Windows, open a terminal in the project folder and run:
 
@@ -48,7 +48,7 @@ If the `py` launcher is unavailable, use:
 python start.py
 ```
 
-### Portuguese interface
+# Portuguese interface
 
 ```bash
 py start.py --pt
@@ -56,7 +56,7 @@ py start.py --pt
 
 The web interface also has an **EN / PT-BR** language switch. The RPA uses stable `data-testid` selectors, so changing the UI language does not break the automation.
 
-### Demo speed
+# Demo speed
 
 The default demo delay is `600 ms` between browser actions so the workflow can be followed visually.
 
@@ -67,7 +67,7 @@ py start.py --speed 900
 
 Use `0` for near-production speed.
 
-## Demo credentials
+# Demo credentials
 
 | System | User | Password |
 | --- | --- | --- |
@@ -76,7 +76,7 @@ Use `0` for near-production speed.
 
 These credentials are intentionally public because the systems and data are local and fictional.
 
-## Project structure
+# Project structure
 
 ```text
 invoice-processing-rpa/
@@ -96,7 +96,7 @@ invoice-processing-rpa/
 └── requirements.txt
 ```
 
-## Business scenarios
+# Business scenarios
 
 - `INV-1001`: successful service invoice registration
 - `INV-1002`: successful product invoice registration
@@ -104,7 +104,7 @@ invoice-processing-rpa/
 - `INV-1004`: successful expense reimbursement registration
 - `INV-1005`: unmapped invoice type requiring review
 
-## Tech stack
+# Tech stack
 
 - Python
 - Playwright
@@ -113,6 +113,6 @@ invoice-processing-rpa/
 - HTML/CSS
 - Python standard-library HTTP server
 
-## Why this project is useful
+# Why this project is useful
 
-This project demonstrates more than browser clicking. It includes queue processing, two-system navigation, file downloads, PDF manipulation, business-rule mapping, duplicate prevention, controlled exceptions, progress persistence in Excel and a reproducible local demo environment.
+This project simulates a real automation workflow involving Excel, two business systems, document downloads, PDF processing, business validations and automatic status updates.
