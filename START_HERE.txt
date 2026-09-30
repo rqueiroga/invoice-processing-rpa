@@ -1,0 +1,15 @@
+INVOICE PROCESSING RPA
+
+Windows / English interface:
+    py start.py
+
+Windows / Portuguese interface:
+    py start.py --pt
+
+That is the only command required.
+On the first run, start.py creates .venv, installs the dependencies and downloads Chromium automatically.
+Later runs skip the setup and start the demo directly.
+
+Optional:
+    py start.py --speed 300    faster demo
+    py start.py --speed 900    slower demo

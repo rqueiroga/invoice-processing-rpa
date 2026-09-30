@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360">
+  <rect width="1200" height="360" rx="28" fill="#f8fafc"/>
+  <style>
+    .box{fill:#ffffff;stroke:#cbd5e1;stroke-width:2;rx:16}
+    .title{font:700 24px Arial;fill:#0f172a}
+    .label{font:600 17px Arial;fill:#1e293b}
+    .small{font:14px Arial;fill:#64748b}
+    .arrow{stroke:#2563eb;stroke-width:4;fill:none;marker-end:url(#m)}
+  </style>
+  <defs><marker id="m" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#2563eb"/></marker></defs>
+  <text x="50" y="52" class="title">Invoice Processing RPA</text>
+  <text x="50" y="80" class="small">Excel queue -> supplier documents -> PDF processing -> finance registration -> status update</text>
+
+  <rect class="box" x="45" y="125" width="170" height="110"/>
+  <text x="130" y="168" text-anchor="middle" class="label">Excel Queue</text>
+  <text x="130" y="198" text-anchor="middle" class="small">invoice_queue.xlsx</text>
+
+  <rect class="box" x="265" y="125" width="190" height="110"/>
+  <text x="360" y="168" text-anchor="middle" class="label">Supplier Portal</text>
+  <text x="360" y="198" text-anchor="middle" class="small">search + download</text>
+
+  <rect class="box" x="505" y="125" width="175" height="110"/>
+  <text x="592" y="168" text-anchor="middle" class="label">PDF Package</text>
+  <text x="592" y="198" text-anchor="middle" class="small">merge documents</text>
+
+  <rect class="box" x="730" y="125" width="190" height="110"/>
+  <text x="825" y="168" text-anchor="middle" class="label">Finance Portal</text>
+  <text x="825" y="198" text-anchor="middle" class="small">validate + upload</text>
+
+  <rect class="box" x="970" y="125" width="185" height="110"/>
+  <text x="1062" y="168" text-anchor="middle" class="label">Result</text>
+  <text x="1062" y="198" text-anchor="middle" class="small">write back to Excel</text>
+
+  <path class="arrow" d="M215 180 H255"/>
+  <path class="arrow" d="M455 180 H495"/>
+  <path class="arrow" d="M680 180 H720"/>
+  <path class="arrow" d="M920 180 H960"/>
+
+  <text x="50" y="300" class="small">Demo UI supports English and Portuguese. The automation uses stable test IDs, so language changes do not break selectors.</text>
+</svg>
