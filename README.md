@@ -54,7 +54,7 @@ python start.py
 py start.py --pt
 ```
 
-The web interface also has an **EN / PT-BR** language switch. The RPA uses stable `data-testid` selectors, so changing the UI language does not break the automation.
+The web interface also has an **EN / PT-BR** language switch.
 
 # Demo speed
 
