@@ -1,15 +1,11 @@
 INVOICE PROCESSING RPA
 
-Windows / English interface:
+Para executar:
     py start.py
 
-Windows / Portuguese interface:
-    py start.py --pt
+Na primeira vez, o projeto prepara o ambiente automaticamente.
+Nas próximas execuções, basta usar o mesmo comando.
 
-That is the only command required.
-On the first run, start.py creates .venv, installs the dependencies and downloads Chromium automatically.
-Later runs skip the setup and start the demo directly.
-
-Optional:
-    py start.py --speed 300    faster demo
-    py start.py --speed 900    slower demo
+Opcional:
+    py start.py --speed 900   deixa a demonstração mais lenta
+    py start.py --pt          abre os sistemas em português

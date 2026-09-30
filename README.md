@@ -2,70 +2,77 @@
 
 [Português](README.pt-BR.md)
 
-RPA project that simulates an Accounts Payable workflow across two fictional business systems.
+RPA project that simulates an Accounts Payable workflow between two fictional business systems.
 
-All companies, credentials, records, systems and documents in this repository are fictional.
+All companies, credentials, records and documents used in this repository are fictional.
 
-[Architecture](docs/architecture.svg)
+![Project flow](docs/architecture.svg)
 
-# What the automation does
+# Flow
 
-1. Reads pending invoice tasks from an Excel queue.
-2. Logs into the **Supplier Portal** and searches for each invoice.
+1. Reads pending invoices from an Excel queue.
+2. Opens the **Supplier Portal** and searches for the invoice.
 3. Downloads the first and last supporting documents.
-4. Merges them into a single PDF package.
-5. Opens the **Finance Portal** and locates the related purchase order.
-6. Checks for duplicate registrations.
-7. Maps the invoice type, uploads the PDF package and saves the registration.
-8. Writes the result back to Excel after every processed row.
+4. Merges both files into one PDF.
+5. Opens the **Finance Portal** and searches for the purchase order.
+6. Checks whether the invoice was already registered.
+7. Uploads the PDF and saves the registration.
+8. Writes the result back to Excel.
 
-The demo includes successful cases and business exceptions such as a missing purchase order and an unmapped invoice type.
+The demo also includes cases such as a missing purchase order and an invoice type that requires manual review.
 
-# Quick start
+# Run
 
-The project uses a single launcher. 
-
-On Windows, open a terminal in the project folder and run:
+Open a terminal in the project folder and run:
 
 ```bash
 py start.py
 ```
 
-On the first run, `start.py` automatically:
+On the first run, the project creates its local Python environment and installs what it needs automatically. Later runs use the same command and start directly.
 
-- creates `.venv`;
-- installs the Python dependencies;
-- downloads the Playwright Chromium browser;
-- resets the demo data;
-- starts the two fictional systems;
-- runs the RPA.
+The demo systems open in English by default, while the terminal messages are in Portuguese.
 
-Later runs skip the installation and start the demo directly.
-
-If the `py` launcher is unavailable, use:
+Optional commands:
 
 ```bash
-python start.py
-```
-
-# Portuguese interface
-
-```bash
+py start.py --speed 900
 py start.py --pt
 ```
 
-The web interface also has an **EN / PT-BR** language switch.
+`--speed 900` makes the browser slower for recordings. `--pt` opens the demo systems in Portuguese.
 
-# Demo speed
+# Project files
 
-The default demo delay is `600 ms` between browser actions so the workflow can be followed visually.
-
-```bash
-py start.py --speed 300
-py start.py --speed 900
+```text
+invoice-processing-rpa/
+├── start.py                 # starts the project and prepares the first run
+├── main.py                  # RPA workflow
+├── demo_server.py           # fictional Supplier and Finance portals
+├── run_demo.py              # starts the portals and the automation
+├── reset_demo.py            # restores the demo data
+├── data/
+│   └── invoice_queue.xlsx   # invoice queue
+├── sample_documents/        # fictional PDF files
+├── docs/
+│   └── architecture.svg     # project flow diagram
+└── runtime/                 # files created while the demo is running
 ```
 
-Use `0` for near-production speed.
+# Demo cases
+
+- `INV-1001`: service invoice processed successfully
+- `INV-1002`: product invoice processed successfully
+- `INV-1003`: purchase order not found
+- `INV-1004`: expense reimbursement processed successfully
+- `INV-1005`: invoice type without automatic mapping
+
+# Technologies
+
+- Python
+- Playwright
+- OpenPyXL
+- pypdf
 
 # Demo credentials
 
@@ -73,46 +80,3 @@ Use `0` for near-production speed.
 | --- | --- | --- |
 | Supplier Portal | `supplier.demo` | `demo123` |
 | Finance Portal | `finance.demo` | `demo123` |
-
-These credentials are intentionally public because the systems and data are local and fictional.
-
-# Project structure
-
-```text
-invoice-processing-rpa/
-├── start.py                # Single project launcher and automatic setup
-├── main.py                 # RPA workflow
-├── demo_server.py          # Supplier Portal + Finance Portal
-├── run_demo.py             # Demo orchestration
-├── reset_demo.py           # Restores the initial demo state
-├── START_HERE.txt          # Minimal run instructions
-├── data/
-│   └── invoice_queue.xlsx  # Processing queue
-├── sample_documents/       # Fictional PDF documents
-├── docs/
-│   └── architecture.svg
-├── runtime/                # Generated local registrations/uploads
-├── .gitignore
-└── requirements.txt
-```
-
-# Business scenarios
-
-- `INV-1001`: successful service invoice registration
-- `INV-1002`: successful product invoice registration
-- `INV-1003`: purchase order not found
-- `INV-1004`: successful expense reimbursement registration
-- `INV-1005`: unmapped invoice type requiring review
-
-# Tech stack
-
-- Python
-- Playwright
-- OpenPyXL
-- pypdf
-- HTML/CSS
-- Python standard-library HTTP server
-
-# Why this project is useful
-
-This project simulates a real automation workflow involving Excel, two business systems, document downloads, PDF processing, business validations and automatic status updates.

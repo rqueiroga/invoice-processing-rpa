@@ -24,7 +24,7 @@ def requirements_hash() -> str:
 
 def ensure_environment() -> None:
     if not VENV_PYTHON.exists():
-        print("First run: creating the local Python environment...")
+        print("Primeira execução: criando o ambiente Python local...")
         run([sys.executable, "-m", "venv", str(VENV)])
 
     current_hash = requirements_hash()
@@ -33,20 +33,20 @@ def ensure_environment() -> None:
     if installed_hash == current_hash:
         return
 
-    print("Installing project dependencies...")
+    print("Instalando as dependências do projeto...")
     run([str(VENV_PYTHON), "-m", "pip", "install", "-r", str(REQUIREMENTS)])
 
-    print("Installing the Playwright Chromium browser...")
+    print("Instalando o navegador Chromium do Playwright...")
     run([str(VENV_PYTHON), "-m", "playwright", "install", "chromium"])
 
     SETUP_MARKER.write_text(current_hash, encoding="utf-8")
-    print("Setup complete.\n")
+    print("Configuração concluída.\n")
 
 
 def args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Start the Invoice Processing RPA demo")
-    parser.add_argument("--pt", action="store_true", help="open the demo interface in Portuguese")
-    parser.add_argument("--speed", type=int, default=600, help="delay between browser actions in milliseconds")
+    parser = argparse.ArgumentParser(description="Inicia a demonstração do RPA de processamento de notas")
+    parser.add_argument("--pt", action="store_true", help="abre a interface da demonstração em português")
+    parser.add_argument("--speed", type=int, default=600, help="intervalo entre ações do navegador em milissegundos")
     return parser.parse_args()
 
 
@@ -56,14 +56,14 @@ def main() -> int:
     try:
         ensure_environment()
     except subprocess.CalledProcessError as exc:
-        print(f"\nSetup failed with exit code {exc.returncode}.")
+        print(f"\nA configuração falhou com o código {exc.returncode}.")
         return exc.returncode
 
     env = os.environ.copy()
     env["DEMO_LANG"] = "pt" if options.pt else "en"
     env["DEMO_SPEED_MS"] = str(max(0, options.speed))
 
-    print("Starting the demo...\n")
+    print("Iniciando a demonstração...\n")
     result = subprocess.run(
         [str(VENV_PYTHON), str(ROOT / "run_demo.py")],
         cwd=ROOT,

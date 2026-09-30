@@ -429,5 +429,5 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    print(f"Demo systems running at http://{HOST}:{PORT}")
+    print(f"Sistemas da demonstração disponíveis em http://{HOST}:{PORT}")
     ThreadingHTTPServer((HOST, PORT), Handler).serve_forever()

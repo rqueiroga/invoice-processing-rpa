@@ -21,11 +21,11 @@ def wait_for_server(timeout: float = 10) -> None:
                 return
         except Exception:
             time.sleep(0.2)
-    raise RuntimeError("The demo server did not start.")
+    raise RuntimeError("O servidor da demonstração não iniciou.")
 
 
 def main() -> int:
-    print("Preparing a clean demo...")
+    print("Preparando uma demonstração limpa...")
     reset()
 
     server = subprocess.Popen(
@@ -37,19 +37,19 @@ def main() -> int:
 
     try:
         wait_for_server()
-        print(f"Demo systems: {URL}")
-        print("Starting the automation...\n")
+        print(f"Sistemas da demonstração: {URL}")
+        print("Iniciando a automação...\n")
 
         result = subprocess.run([sys.executable, str(ROOT / "main.py")], cwd=ROOT, env=os.environ.copy())
 
         if result.returncode == 0:
-            print("\nDemo completed. Results were written to data/invoice_queue.xlsx.")
-            print(f"You can inspect the demo systems at {URL} before closing this window.")
+            print("\nDemonstração concluída. Os resultados foram gravados em data/invoice_queue.xlsx.")
+            print(f"Você pode conferir os sistemas em {URL} antes de fechar esta janela.")
         else:
-            print("\nThe automation ended with an error. Check the messages above.")
+            print("\nA automação terminou com erro. Confira as mensagens acima.")
 
         try:
-            input("Press Enter to stop the demo server...")
+            input("Pressione Enter para encerrar o servidor da demonstração...")
         except EOFError:
             pass
         return result.returncode

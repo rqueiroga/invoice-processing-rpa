@@ -30,4 +30,4 @@ def reset() -> None:
 
 if __name__ == "__main__":
     reset()
-    print("Demo reset complete.")
+    print("Demonstração restaurada com sucesso.")

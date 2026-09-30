@@ -31,6 +31,28 @@ TYPE_MAP = {
     "Expense Reimbursement": "Expenses",
 }
 
+DISPLAY_TYPES_PT = {
+    "Service Invoice": "Nota de Serviço",
+    "Product Invoice": "Nota de Produto",
+    "Expense Reimbursement": "Reembolso de Despesas",
+    "Other": "Outro",
+}
+
+
+def display_status_pt(status: str) -> str:
+    translations = {
+        "Completed": "Concluído",
+        "Purchase order not found": "Pedido de compra não encontrado",
+        "Already registered": "Já cadastrado",
+        "Documents not found": "Documentos não encontrados",
+    }
+    if status.startswith("Unmapped invoice type:"):
+        invoice_type = status.split(":", 1)[1].strip()
+        return f"Tipo de nota sem mapeamento: {DISPLAY_TYPES_PT.get(invoice_type, invoice_type)}"
+    if status.startswith("Error:"):
+        return "Erro:" + status.split(":", 1)[1]
+    return translations.get(status, status)
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(message)s")
 LOG = logging.getLogger("invoice_rpa")
 
@@ -92,7 +114,7 @@ class SupplierPortal:
         self.page = page
 
     def login(self) -> None:
-        LOG.info("Supplier Portal | signing in")
+        LOG.info("Portal do Fornecedor | fazendo login")
         self.page.bring_to_front()
         self.page.goto(f"{SUPPLIER_URL}/login")
         self.page.get_by_test_id("user").fill(SUPPLIER_USER)
@@ -101,22 +123,22 @@ class SupplierPortal:
         self.page.wait_for_url("**/supplier/invoices")
 
     def download_package(self, invoice_id: str, folder: Path) -> Path | None:
-        LOG.info("Supplier Portal | searching %s", invoice_id)
+        LOG.info("Portal do Fornecedor | buscando %s", invoice_id)
         self.page.bring_to_front()
         self.page.goto(f"{SUPPLIER_URL}/invoices?invoice={quote(invoice_id)}")
 
         link = self.page.get_by_test_id("invoice-link")
         if link.count() == 0:
-            LOG.info("Supplier Portal | invoice not found")
+            LOG.info("Portal do Fornecedor | nota não encontrada")
             return None
 
         link.click()
         rows = self.page.get_by_test_id("attachment-row")
         if rows.count() < 2:
-            LOG.info("Supplier Portal | not enough attachments")
+            LOG.info("Portal do Fornecedor | documentos insuficientes")
             return None
 
-        LOG.info("Supplier Portal | downloading first and last attachments")
+        LOG.info("Portal do Fornecedor | baixando o primeiro e o último documento")
         files = []
         for label, index in (("first", 0), ("last", rows.count() - 1)):
             row = rows.nth(index)
@@ -128,7 +150,7 @@ class SupplierPortal:
             files.append(target)
 
         output = folder / f"{invoice_id}_package.pdf"
-        LOG.info("PDF | merging attachments into %s", output.name)
+        LOG.info("PDF | unificando documentos em %s", output.name)
         return merge_pdfs(files, output)
 
 
@@ -137,7 +159,7 @@ class FinancePortal:
         self.page = page
 
     def login(self) -> None:
-        LOG.info("Finance Portal | signing in")
+        LOG.info("Portal Financeiro | fazendo login")
         self.page.bring_to_front()
         self.page.goto(f"{FINANCE_URL}/login")
         self.page.get_by_test_id("user").fill(FINANCE_USER)
@@ -148,24 +170,24 @@ class FinancePortal:
     def register(self, invoice: Invoice, document: Path) -> str:
         doc_type = TYPE_MAP.get(invoice.invoice_type)
         if not doc_type:
-            LOG.info("Business rule | unmapped invoice type: %s", invoice.invoice_type)
+            LOG.info("Regra de negócio | tipo de nota sem mapeamento: %s", invoice.invoice_type)
             return f"Unmapped invoice type: {invoice.invoice_type}"
 
-        LOG.info("Finance Portal | searching purchase order %s", invoice.purchase_order)
+        LOG.info("Portal Financeiro | buscando pedido de compra %s", invoice.purchase_order)
         self.page.bring_to_front()
         self.page.goto(f"{FINANCE_URL}/orders?po={quote(invoice.purchase_order)}")
 
         order = self.page.get_by_test_id("order-link")
         if order.count() == 0:
-            LOG.info("Finance Portal | purchase order not found")
+            LOG.info("Portal Financeiro | pedido de compra não encontrado")
             return "Purchase order not found"
 
         order.click()
-        LOG.info("Finance Portal | checking duplicate registration")
+        LOG.info("Portal Financeiro | verificando registro duplicado")
         if self.page.locator(f"[data-invoice='{invoice.invoice_id}']").count():
             return "Already registered"
 
-        LOG.info("Finance Portal | registering invoice package")
+        LOG.info("Portal Financeiro | cadastrando pacote da nota")
         self.page.get_by_test_id("register-link").click()
         self.page.get_by_test_id("invoice-id").fill(invoice.invoice_id)
         self.page.get_by_test_id("document-type").select_option(value=doc_type)
@@ -214,7 +236,12 @@ def run(path: Path, reprocess: bool, headless: bool) -> None:
                     continue
 
                 invoice = sheet.read(row)
-                LOG.info("Queue | %s | %s | %s", invoice.invoice_id, invoice.purchase_order, invoice.invoice_type)
+                LOG.info(
+                    "Processando | %s | %s | %s",
+                    invoice.invoice_id,
+                    invoice.purchase_order,
+                    DISPLAY_TYPES_PT.get(invoice.invoice_type, invoice.invoice_type),
+                )
 
                 try:
                     folder = Path(temp) / invoice.invoice_id
@@ -222,14 +249,14 @@ def run(path: Path, reprocess: bool, headless: bool) -> None:
                     package = supplier.download_package(invoice.invoice_id, folder)
                     result = "Documents not found" if package is None else finance.register(invoice, package)
                 except Exception as exc:
-                    LOG.exception("Automation failed for %s", invoice.invoice_id)
+                    LOG.exception("Falha na automação para %s", invoice.invoice_id)
                     result = f"Error: {str(exc)[:180]}"
 
                 sheet.save_status(row, result)
-                LOG.info("Result | %s -> %s", invoice.invoice_id, result)
+                LOG.info("Resultado | %s -> %s", invoice.invoice_id, display_status_pt(result))
 
             if not headless:
-                LOG.info("Demo finished | keeping the browser open for 5 seconds")
+                LOG.info("Demonstração concluída | mantendo o navegador aberto por 5 segundos")
                 finance.page.bring_to_front()
                 finance.page.wait_for_timeout(5000)
 
@@ -240,7 +267,7 @@ def run(path: Path, reprocess: bool, headless: bool) -> None:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Invoice Processing RPA demo")
+    parser = argparse.ArgumentParser(description="Demonstração de RPA para processamento de notas")
     parser.add_argument("--file", type=Path, default=DEFAULT_FILE)
     parser.add_argument("--reprocess", action="store_true")
     parser.add_argument("--headless", action="store_true")

@@ -2,28 +2,26 @@
 
 [English](README.md)
 
-Projeto de portfólio de RPA que automatiza um fluxo comum de contas a pagar entre dois sistemas empresariais fictícios.
+Projeto de RPA que simula uma rotina de Contas a Pagar entre dois sistemas empresariais fictícios.
 
-Todas as empresas, credenciais, registros, sistemas e documentos deste repositório são fictícios.
+Todas as empresas, credenciais, registros e documentos usados neste repositório são fictícios.
 
-[Arquitetura](docs/architecture.svg)
+![Fluxo do projeto](docs/architecture.svg)
 
-# O que a automação faz
+# Fluxo
 
-1. Lê tarefas pendentes em uma fila no Excel.
-2. Entra no **Portal de Fornecedores** e consulta cada nota.
-3. Baixa o primeiro e o último documento de apoio.
-4. Une os arquivos em um único pacote PDF.
-5. Abre o **Portal Financeiro** e localiza o pedido de compra relacionado.
-6. Confere se a nota já foi registrada.
-7. Mapeia o tipo da nota, envia o PDF e salva o cadastro.
-8. Grava o resultado no Excel após cada linha processada.
+1. Lê as notas pendentes em uma fila no Excel.
+2. Acessa o **Portal de Fornecedores** e pesquisa a nota.
+3. Baixa o primeiro e o último documento disponível.
+4. Une os dois arquivos em um único PDF.
+5. Acessa o **Portal Financeiro** e pesquisa o pedido de compra.
+6. Confere se a nota já foi cadastrada.
+7. Envia o PDF e salva o registro.
+8. Grava o resultado no Excel.
 
-A demonstração inclui casos de sucesso e exceções de negócio, como pedido de compra inexistente e tipo de nota sem mapeamento.
+A demonstração também possui casos como pedido de compra inexistente e tipo de nota que precisa de revisão manual.
 
 # Como rodar
-
-Agora existe apenas **um comando principal**.
 
 Abra um terminal dentro da pasta do projeto e execute:
 
@@ -31,77 +29,42 @@ Abra um terminal dentro da pasta do projeto e execute:
 py start.py
 ```
 
-Na primeira execução, o próprio `start.py`:
+Na primeira execução, o projeto cria o ambiente Python local e instala automaticamente o que precisa. Nas próximas vezes, o mesmo comando inicia a demonstração diretamente.
 
-- cria o `.venv`;
-- instala as bibliotecas do projeto;
-- baixa o Chromium do Playwright;
-- restaura os dados da demonstração;
-- inicia os dois sistemas fictícios;
-- executa o RPA.
+Os sistemas abrem em inglês por padrão e as mensagens do terminal ficam em português.
 
-Nas próximas execuções, a etapa de instalação é ignorada.
-
-Se `py` não estiver disponível, use:
+Comandos opcionais:
 
 ```bash
-python start.py
-```
-
-# Interface em português
-
-```bash
+py start.py --speed 900
 py start.py --pt
 ```
 
-Os sistemas também possuem um seletor **EN / PT-BR** no topo.
+`--speed 900` deixa o navegador mais lento para gravações. `--pt` abre os sistemas da demonstração em português.
 
-# Velocidade da demonstração
-
-O padrão é `600 ms` adicionais entre as ações para que seja possível acompanhar visualmente o fluxo.
-
-```bash
-py start.py --speed 300
-py start.py --speed 900
-```
-
-Use `0` para uma execução próxima da velocidade normal.
-
-# Credenciais da demonstração
-
-| Sistema | Usuário | Senha |
-| --- | --- | --- |
-| Portal de Fornecedores | `supplier.demo` | `demo123` |
-| Portal Financeiro | `finance.demo` | `demo123` |
-
-As credenciais são públicas de propósito porque todo o ambiente é local e fictício.
-
-# Estrutura do projeto
+# Arquivos do projeto
 
 ```text
 invoice-processing-rpa/
-├── start.py                # Único ponto de entrada e configuração automática
-├── main.py                 # Automação RPA
-├── demo_server.py          # Dois sistemas fictícios
-├── run_demo.py             # Orquestra a demonstração
-├── reset_demo.py           # Restaura o estado inicial
-├── START_HERE.txt          # Instruções mínimas de execução
+├── start.py                 # inicia o projeto e prepara a primeira execução
+├── main.py                  # fluxo principal do RPA
+├── demo_server.py           # portais fictícios de fornecedor e financeiro
+├── run_demo.py              # inicia os portais e a automação
+├── reset_demo.py            # restaura os dados da demonstração
 ├── data/
-│   └── invoice_queue.xlsx  # Fila de processamento
-├── sample_documents/       # PDFs fictícios
+│   └── invoice_queue.xlsx   # fila de notas
+├── sample_documents/        # PDFs fictícios
 ├── docs/
-│   └── architecture.svg
-├── runtime/                # Dados gerados durante a execução
-├── .gitignore
-└── requirements.txt
+│   └── architecture.svg     # diagrama do fluxo
+└── runtime/                 # arquivos criados durante a execução
 ```
 
-# Cenários incluídos
+# Cenários da demonstração
 
-- `INV-1001`: cadastro normal de nota de serviço
-- `INV-1002`: cadastro normal de nota de produto
-- `INV-1003`: pedido de compra inexistente
-- `INV-1004`: cadastro de reembolso de despesas
+- `INV-1001`: nota de serviço processada com sucesso
+- `INV-1002`: nota de produto processada com sucesso
+- `INV-1003`: pedido de compra não encontrado
+- `INV-1004`: reembolso de despesas processado com sucesso
 - `INV-1005`: tipo de nota sem mapeamento automático
 
 # Tecnologias
@@ -110,9 +73,10 @@ invoice-processing-rpa/
 - Playwright
 - OpenPyXL
 - pypdf
-- HTML/CSS
-- servidor HTTP da biblioteca padrão do Python
 
-## O que o projeto demonstra
+# Credenciais da demonstração
 
-O projeto simula uma rotina de automação empresarial envolvendo Excel, dois sistemas, download e tratamento de documentos, validações e atualização automática do resultado.
+| Sistema | Usuário | Senha |
+| --- | --- | --- |
+| Portal de Fornecedores | `supplier.demo` | `demo123` |
+| Portal Financeiro | `finance.demo` | `demo123` |
