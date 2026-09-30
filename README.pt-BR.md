@@ -2,13 +2,13 @@
 
 [English](README.md)
 
-Projeto de portfólio de RPA de ponta a ponta que automatiza um fluxo comum de Contas a Pagar entre dois sistemas empresariais fictícios.
+Projeto de portfólio de RPA que automatiza um fluxo comum de contas a pagar entre dois sistemas empresariais fictícios.
 
 Todas as empresas, credenciais, registros, sistemas e documentos deste repositório são fictícios.
 
-![Arquitetura](docs/architecture.svg)
+[Arquitetura](docs/architecture.svg)
 
-## O que a automação faz
+# O que a automação faz
 
 1. Lê tarefas pendentes em uma fila no Excel.
 2. Entra no **Portal de Fornecedores** e consulta cada nota.
@@ -21,9 +21,9 @@ Todas as empresas, credenciais, registros, sistemas e documentos deste repositó
 
 A demonstração inclui casos de sucesso e exceções de negócio, como pedido de compra inexistente e tipo de nota sem mapeamento.
 
-## Como rodar
+# Como rodar
 
-Agora existe apenas **um comando principal**. Não é necessário ativar `.venv`, liberar scripts do PowerShell ou executar arquivos `.bat`.
+Agora existe apenas **um comando principal**.
 
 Abra um terminal dentro da pasta do projeto e execute:
 
@@ -40,7 +40,7 @@ Na primeira execução, o próprio `start.py`:
 - inicia os dois sistemas fictícios;
 - executa o RPA.
 
-Nas próximas execuções, a etapa de instalação é ignorada e a demonstração começa diretamente.
+Nas próximas execuções, a etapa de instalação é ignorada.
 
 Se `py` não estiver disponível, use:
 
@@ -48,15 +48,15 @@ Se `py` não estiver disponível, use:
 python start.py
 ```
 
-### Interface em português
+# Interface em português
 
 ```bash
 py start.py --pt
 ```
 
-Os sistemas também possuem um seletor **EN / PT-BR** no topo. O robô usa seletores `data-testid`, então mudar o idioma da interface não interfere no funcionamento.
+Os sistemas também possuem um seletor **EN / PT-BR** no topo.
 
-### Velocidade da demonstração
+# Velocidade da demonstração
 
 O padrão é `600 ms` adicionais entre as ações para que seja possível acompanhar visualmente o fluxo.
 
@@ -67,7 +67,7 @@ py start.py --speed 900
 
 Use `0` para uma execução próxima da velocidade normal.
 
-## Credenciais da demonstração
+# Credenciais da demonstração
 
 | Sistema | Usuário | Senha |
 | --- | --- | --- |
@@ -76,7 +76,7 @@ Use `0` para uma execução próxima da velocidade normal.
 
 As credenciais são públicas de propósito porque todo o ambiente é local e fictício.
 
-## Estrutura do projeto
+# Estrutura do projeto
 
 ```text
 invoice-processing-rpa/
@@ -96,7 +96,7 @@ invoice-processing-rpa/
 └── requirements.txt
 ```
 
-## Cenários incluídos
+# Cenários incluídos
 
 - `INV-1001`: cadastro normal de nota de serviço
 - `INV-1002`: cadastro normal de nota de produto
@@ -104,7 +104,7 @@ invoice-processing-rpa/
 - `INV-1004`: cadastro de reembolso de despesas
 - `INV-1005`: tipo de nota sem mapeamento automático
 
-## Tecnologias
+# Tecnologias
 
 - Python
 - Playwright
@@ -115,4 +115,4 @@ invoice-processing-rpa/
 
 ## O que o projeto demonstra
 
-O projeto não é apenas automação de cliques. Ele mostra processamento por fila, navegação entre dois sistemas, downloads, manipulação de PDFs, regras de negócio, prevenção de duplicidade, tratamento de exceções, persistência de progresso em Excel e um ambiente local reproduzível para demonstração.
+O projeto simula uma rotina de automação empresarial envolvendo Excel, dois sistemas, download e tratamento de documentos, validações e atualização automática do resultado.
